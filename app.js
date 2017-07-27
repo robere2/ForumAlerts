@@ -17,10 +17,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
 }));
 
 app.get('/', function (req, res) {
-
+    res.send("Home Page");
 });
 
 app.post('/runkey', function (req, res) {
+    res.writeHead(200, {"Content-Type": "application/json"});
     var json = {};
     // If key is valid
     if(req.body.key === runkey) {
@@ -30,6 +31,13 @@ app.post('/runkey', function (req, res) {
         json.error = "Invalid key";
     }
     res.send(JSON.stringify(json));
+});
+app.get('/runkey', function (req, res) {
+    res.writeHead(200, {"Content-Type": "application/json"})
+   var json = {};
+   json.ok = false;
+   json.error = "No key";
+   res.send(JSON.stringify(json));
 });
 
 var server = https.createServer(credentials, app);
