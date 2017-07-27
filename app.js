@@ -27,21 +27,20 @@ app.get('/', function (req, res) {
     res.send("Home Page");
 });
 
-app.post('/runkey', function (req, res) {
+app.all('/runkey', function (req, res) {
     var json = {};
     // If key is valid
     console.log("Key: " + req.body.key);
-    if(req.body.key === runkey) {
-        json.ok = true;
+    if(typeof req.body.key !== undefined) {
+        if(req.body.key === runkey) {
+            json.ok = true;
+        } else {
+            json.ok = false;
+            json.error = "Invalid key";
+        }
     } else {
         json.ok = false;
-        json.error = "Invalid key";
+        json.error = "No key";
     }
-    res.json(json);
-});
-app.get('/runkey', function (req, res) {
-    var json = {};
-    json.ok = false;
-    json.error = "No key";
     res.json(json);
 });
