@@ -3,7 +3,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     fs = require('fs');
 var app = express();
-var runkey = require("./hidden/runkey.txt");
+require("./hidden/runkey.js");
 
 var credentials = { // SSL Credentials
     ca: fs.readFileSync("../www/certbot/fullchain.pem"),
