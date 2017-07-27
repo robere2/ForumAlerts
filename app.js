@@ -6,9 +6,8 @@ var app = express();
 var runkey = require("./hidden/runkey.js").runkey;
 
 var credentials = { // SSL Credentials
-    ca: fs.readFileSync("../www/certbot/fullchain.pem"),
-    key: fs.readFileSync("../www/certbot/privkey.pem"),
-    cert: fs.readFileSync("../www/certbot/cert.pem")
+    key: fs.readFileSync("../cert/privkey.pem"),
+    cert: fs.readFileSync("../cert/cert.pem")
 };
 
 app.use(bodyParser.json());       // to support JSON-encoded POST bodies
