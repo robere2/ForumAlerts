@@ -1,6 +1,7 @@
 var express = require('express'),
     https = require('https'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+    fs = require('fs');
 var app = express();
 var runkey = require("./hidden/runkey.txt");
 
