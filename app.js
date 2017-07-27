@@ -31,7 +31,7 @@ app.all('/runkey', function (req, res) {
     var json = {};
     // If key is valid
     console.log("Key: " + req.body.key);
-    if(typeof req.body.key !== undefined) {
+    if(req.body.key.length > 0) {
         if(req.body.key === runkey) {
             json.ok = true;
         } else {
