@@ -16,11 +16,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
     extended: true
 }));
 
-app.use(express.json());       // to support JSON-encoded POST bodies
-app.use(express.urlencoded()); // to support URL-encoded POST bodies
-
-
-
 app.get('/', function (req, res) {
 
 });
