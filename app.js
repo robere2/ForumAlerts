@@ -11,10 +11,17 @@ var credentials = { // SSL Credentials
     cert: fs.readFileSync("../www/certbot/cert.pem")
 };
 
-app.use( bodyParser.json() );       // to support JSON-encoded POST bodies
+app.use(bodyParser.json());       // to support JSON-encoded POST bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
     extended: true
 }));
+
+var server = https.createServer(credentials, app);
+
+server.listen(8081, function () {
+    console.log('Listening');
+});
+
 
 app.get('/', function (req, res) {
     res.send("Home Page");
@@ -23,6 +30,7 @@ app.get('/', function (req, res) {
 app.post('/runkey', function (req, res) {
     var json = {};
     // If key is valid
+    console.log("Key: " + req.body.key);
     if(req.body.key === runkey) {
         json.ok = true;
     } else {
@@ -32,14 +40,8 @@ app.post('/runkey', function (req, res) {
     res.json(json);
 });
 app.get('/runkey', function (req, res) {
-   var json = {};
-   json.ok = false;
-   json.error = "No key";
-   res.json(json);
-});
-
-var server = https.createServer(credentials, app);
-
-server.listen(8081, function () {
-    console.log('Listening');
+    var json = {};
+    json.ok = false;
+    json.error = "No key";
+    res.json(json);
 });
