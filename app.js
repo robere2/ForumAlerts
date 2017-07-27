@@ -21,7 +21,6 @@ app.get('/', function (req, res) {
 });
 
 app.post('/runkey', function (req, res) {
-    res.writeHead(200, {"Content-Type": "application/json"});
     var json = {};
     // If key is valid
     if(req.body.key === runkey) {
@@ -30,14 +29,13 @@ app.post('/runkey', function (req, res) {
         json.ok = false;
         json.error = "Invalid key";
     }
-    res.send(JSON.stringify(json));
+    res.json(json);
 });
 app.get('/runkey', function (req, res) {
-    res.writeHead(200, {"Content-Type": "application/json"})
    var json = {};
    json.ok = false;
    json.error = "No key";
-   res.send(JSON.stringify(json));
+   res.json(json);
 });
 
 var server = https.createServer(credentials, app);
