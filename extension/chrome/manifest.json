@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "Hypixel Alerts",
+  "description": "Extension for better notifications on the Hypixel Forums.",
+  "version": "0.1",
+
+  "browser_action": {
+    "default_icon": "../icon.png"
+  },
+  "permissions": [
+    "background",
+    "storage",
+    "notifications",
+	"https://*.bugg.co/"
+  ],
+  "background": {
+    "scripts": ["vendor/jquery-3.2.1.min.js","background.js"]
+  }
+}
