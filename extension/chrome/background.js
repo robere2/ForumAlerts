@@ -23,7 +23,7 @@ setInterval(function() {
 
 function runKeyCheck(data) {
     if(data.ok) {
-
+        console.log("Successfully verified the run key.");
     } else {
         throw new RunKeyCheckException(data.error);
     }
