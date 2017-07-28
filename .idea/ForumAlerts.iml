@@ -14,5 +14,6 @@
     <orderEntry type="library" name="express-serve-static-core-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="serve-static-DefinitelyTyped" level="application" />
     <orderEntry type="library" name="jquery-3.2.1" level="application" />
+    <orderEntry type="library" name="chrome-DefinitelyTyped" level="application" />
   </component>
 </module>
