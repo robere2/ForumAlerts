@@ -6,7 +6,7 @@
   "version": "0.1",
 
   "browser_action": {
-    "default_icon": "../forum-alerts-icon.png"
+    "default_icon": "forum-alerts-icon.png"
   },
   "permissions": [
     "background",
