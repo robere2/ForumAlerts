@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
+    var oauth_input = $("#oauth_token");
     $("#save").click(function() {
-        if($("#oauth_token").val().length) {
+        if(oauth_input.val().length) {
             chrome.storage.sync.set({'token': oauth_input.val()}, function() {
                 var res = "Updated OAuth Token";
                 console.log(res);
