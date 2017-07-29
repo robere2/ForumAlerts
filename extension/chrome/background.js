@@ -49,6 +49,8 @@ function queryRunKey() {
             if(e instanceof RunKeyCheckException) {
                 console.error("RunKeyCheckException: " + e.error);
                 return false;
+            } else {
+                console.error("Uncaught Exception: " + e.toString());
             }
         }
         return true;
