@@ -90,7 +90,7 @@ function queryRunKey() {
 
 
 function failure(point) {
-    var escapedPoint = point.replace(/\./g, ' '); // Replaces the period in the URL to make it safe for object names
+    var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
     if(!failures[escapedPoint]) {
         console.error("Failed to connect to " + point);
         failures[escapedPoint] = true;
