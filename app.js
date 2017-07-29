@@ -27,6 +27,7 @@ app.get('/', function (req, res) {
 });
 
 app.all('/runkey', function (req, res) {
+    res.header({"Access-Control-Allow-Origin": "*"});
     var json = {};
     // If key is valid
     if (typeof req.body.key === "undefined") {
