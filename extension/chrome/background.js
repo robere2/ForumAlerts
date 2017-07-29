@@ -4,7 +4,7 @@ var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"
 
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
-                                                 // prevent notification spam.
+                                                   // prevent notification spam.
 var unreadAlerts = 0, unreadConversations = 0;
 function RunKeyCheckException(error) {
     this.error = error;
