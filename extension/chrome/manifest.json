@@ -4,7 +4,17 @@
   "name": "Hypixel Alerts",
   "description": "Extension for better notifications on the Hypixel Forums.",
   "version": "0.1",
-
+  "author": "bugfroggy",
+  "default_locale": "en",
+  "homepage_url": "https://bugg.co/",
+  "offline_enabled": false,
+  "icons": {
+    "16": "forum-alerts-16x.png",
+    "19": "forum-alerts-icon.png",
+    "48": "forum-alerts-48x.png",
+    "64": "forums-alerts-64x.png",
+    "128": "forum-alerts-128x.png"
+  },
   "browser_action": {
     "default_icon": "pics/forum-alerts-icon.png",
     "default_popup": "popup.html"
