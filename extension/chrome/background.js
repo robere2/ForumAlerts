@@ -3,6 +3,8 @@ var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"
                                                                                   // https://socket.bugg.co:8880/runkey
 
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
+var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
+                                                 // prevent notification spam.
 var unreadAlerts = 0, unreadConversations = 0;
 function RunKeyCheckException(error) {
     this.error = error;
@@ -28,20 +30,31 @@ function queryForum() {
     $.ajax("https://hypixel.net/?_xfResponseType=json", {
         cache: false
     }).done(function(data) {
-        console.log("Unread alerts: " + data._visitor_alertsUnread);
-        console.log("Unread convos: " + data._visitor_conversationsUnread);
-        console.log("Local: " + unreadAlerts + " : " + unreadConversations);
-        if(data._visitor_alertsUnread > unreadAlerts || data._visitor_conversationsUnread > unreadConversations) {
-            console.log("New Notification created");
-            unreadAlerts = data._visitor_alertsUnread;
-            unreadConversations = data._visitor_conversationsUnread;
+        if(failures.hypixelnet) {
+            failures.hypixelnet = false;
+        }
 
-            newAlert(data._visitor_alertsUnread, data._visitor_conversationsUnread);
+        if("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
+            var remote_alerts = data._visitor_alertsUnread;
+            var remote_convo = data._visitor_conversationsUnread;
+            console.log("Unread alerts: " + remote_alerts);
+            console.log("Unread convos: " + remote_convo);
+            console.log("Local: " + unreadAlerts + " : " + unreadConversations);
+
+            if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
+                console.log("New Notification created");
+                unreadAlerts = remote_alerts;
+                unreadConversations = remote_convo;
+
+                newAlert(remote_alerts, remove_convo);
+            } else {
+                console.log("No new data.");
+            }
         } else {
-            console.log("No new data.");
+            failure("hypixel.net");
         }
     }).fail(function() {
-        ajaxFailure("hypixel.net")
+        failure("hypixel.net");
     })
 }
 
@@ -52,6 +65,10 @@ function queryRunKey() {
         method: "POST",
         data: {key: run_key}
     }).done(function(data) {
+        if(failures.buggco) {
+           failures.buggco = false;
+        }
+
         try{
             runKeyCheck(data);
         } catch(e) {
@@ -65,24 +82,29 @@ function queryRunKey() {
         }
         return_val = true;
     }).fail(function() {
-        ajaxFailure("bugg.co");
+        failure("bugg.co");
         return_val = false;
     });
     return return_val;
 }
 
 
-function ajaxFailure(point) {
-    console.error("Failed to connect to " + point);
-    return chrome.notifications.create(null, {
-        type: "basic",
-        iconUrl: "./pics/forum-alerts-64x.png",
-        title: "Connection Failure",
-        message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself."
-    }, function(id) {
-        addNotification(id, "error");
-        console.log("Error Notification ID: " + id);
-    });
+function failure(point) {
+    var escapedPoint = point.replace(/\./g, ' '); // Replaces the period in the URL to make it safe for object names
+    if(!failures[escapedPoint]) {
+        console.error("Failed to connect to " + point);
+        failures[escapedPoint] = true;
+
+        return chrome.notifications.create(null, {
+            type: "basic",
+            iconUrl: "./pics/forum-alerts-64x.png",
+            title: "Connection Failure",
+            message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself."
+        }, function(id) {
+            addNotification(id, "error");
+            console.log("Error Notification ID: " + id);
+        });
+    }
 }
 
 function newAlert(alertCount, convoCount) {
