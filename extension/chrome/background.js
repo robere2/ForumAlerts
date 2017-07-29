@@ -99,7 +99,6 @@ function newAlert(alertCount, convoCount) {
 
 chrome.notifications.onClicked.addListener(function(id) {
     console.log("Clicked");
-    console.log(notifications);
     if($.inArray(id, notifications.alert > -1)) {
         chrome.tabs.create({url: "https://hypixel.net/"});
     } else {
