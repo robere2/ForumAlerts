@@ -132,7 +132,7 @@ chrome.notifications.onClicked.addListener(function(id) {
 // Check installed status
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason === "install"){
-        chrome.storage.sync.set({'forum_alerts_toggle': forum_alerts_input.val()}, function() {
+        chrome.storage.sync.set({'forum_alerts_toggle': true}, function() {
             console.log("First install success, default settings applied.")
         });
     }
