@@ -21,7 +21,13 @@
     <script src="popup.js"></script>
 </head>
 <body>
-    <label for="oauth_token">OAuth Token</label><input id="oauth_token">
+    <!-- <label for="oauth_token">OAuth Token</label><input id="oauth_token"> -->
+    <label for="forum_alerts_toggle">Forum Notifications</label>
+    <select id="forum_alerts_toggle">
+        <option value="true">Enabled</option>
+        <option value="false">Disabled</option>
+    </select>
+
     <button id="save">Save</button>
     <p id="res"></p>
     <div id="legalese">

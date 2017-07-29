@@ -90,16 +90,17 @@ function queryRunKey() {
 
 
 function failure(point) {
+    console.error("Failed to connect to " + point);
+
     var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
     if(!failures[escapedPoint]) {
-        console.error("Failed to connect to " + point);
         failures[escapedPoint] = true;
 
         return chrome.notifications.create(null, {
             type: "basic",
             iconUrl: "./pics/forum-alerts-64x.png",
             title: "Connection Failure",
-            message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself."
+            message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself. (Are you logged in?)"
         }, function(id) {
             addNotification(id, "error");
             console.log("Error Notification ID: " + id);
