@@ -38,6 +38,7 @@ function queryForum() {
 }
 
 function queryRunKey() {
+    var return_val = true;
     $.ajax("https://socket.bugg.co:8081/runkey", {
         cache: false,
         method: "POST",
@@ -48,16 +49,18 @@ function queryRunKey() {
         } catch(e) {
             if(e instanceof RunKeyCheckException) {
                 console.error("RunKeyCheckException: " + e.error);
-                return false;
+                return_val = false;
             } else {
                 console.error("Uncaught Exception: " + e.toString());
+                return_val = false;
             }
         }
-        return true;
+        return_val = true;
     }).fail(function() {
         ajaxFailure("bugg.co");
-        return false;
+        return_val = false;
     });
+    return return_val;
 }
 
 
@@ -77,6 +80,9 @@ function newAlert(alertCount, convoCount) {
         iconUrl: "./forums-alert-icon.png",
         title: "New Hypixel Forum Notifications",
         message: "You have " + alertCount + " unread alert(s) and " + convoCount + " unread conversation(s)."
+    },function(notificationId) {
+        console.log("Notification ID: " + notificationId)
     });
 }
+
 setInterval(run, delay);
