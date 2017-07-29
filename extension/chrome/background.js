@@ -129,6 +129,15 @@ chrome.notifications.onClicked.addListener(function(id) {
     }
 });
 
+// Check installed status
+chrome.runtime.onInstalled.addListener(function(details){
+    if(details.reason === "install"){
+        chrome.storage.sync.set({'forum_alerts_toggle': forum_alerts_input.val()}, function() {
+            console.log("First install success, default settings applied.")
+        });
+    }
+});
+
 function addNotification(id, type) {
     notifications[type].push(id);
 }
