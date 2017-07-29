@@ -13,10 +13,14 @@ function RunKeyCheckException(error) {
 }
 
 function run() {
-    var runKeyValid = queryRunKey();
-    if(runKeyValid) {
-        queryForum();
-    }
+    chrome.storage.sync.get("forum_alerts_toggle", function(items) {
+        var runKeyValid = queryRunKey();
+        if (runKeyValid) {
+            if(items.forum_alerts_toggle === "true") {
+                queryForum();
+            }
+        }
+    });
 }
 
 function runKeyCheck(data) {
