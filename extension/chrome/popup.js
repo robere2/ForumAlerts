@@ -2,7 +2,15 @@ $(document).ready(function() {
 
     var forum_alerts_input = $("#forum_alerts_toggle");
     chrome.storage.sync.get("forum_alerts_toggle", function(items) {
-        forum_alerts_input.val(items.forum_alerts_toggle);
+
+        var val = items.forum_alerts_toggle;
+        if(items.forum_alerts_toggle !== "true" && items.forum_alerts_toggle !== "false") {
+            chrome.storage.sync.set({'forum_alerts_toggle': "true"}, function() {
+                console.log("Invalid value for forum_alerts_toggle, fallback")
+            });
+            val = "true";
+        }
+        forum_alerts_input.val(val);
     });
 
     $("#save").click(function() {
@@ -21,4 +29,5 @@ $(document).ready(function() {
     /*
     OAUTH IS DISABLED FOR NOW. That's probably something I'll do in the future.
     */
+
 });
