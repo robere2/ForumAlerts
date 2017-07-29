@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    $("#version").text("v" + chrome.app.getDetails().version);
+
     var forum_alerts_input = $("#forum_alerts_toggle");
     chrome.storage.sync.get("forum_alerts_toggle", function(items) {
 
