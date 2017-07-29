@@ -65,7 +65,7 @@ function queryForum() {
 
 function queryRunKey() {
     var return_val = true;
-    $.ajax("https://socket.bugg.co:8081/runkey", {
+    $.ajax("http://socket.bugg.co:8081/runkey", {
         cache: false,
         method: "POST",
         data: {key: run_key}
