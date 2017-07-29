@@ -55,7 +55,7 @@ function queryRunKey() {
         }
         return true;
     }).fail(function() {
-        ajaxFailure("bugg.co")
+        ajaxFailure("bugg.co");
         return false;
     });
 }
