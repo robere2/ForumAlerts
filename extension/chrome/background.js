@@ -49,13 +49,12 @@ function queryForum() {
 
             if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
                 console.log("New Notification created");
-                unreadAlerts = remote_alerts;
-                unreadConversations = remote_convo;
-
                 newAlert(remote_alerts, remote_convo);
             } else {
                 console.log("No new data.");
             }
+            unreadAlerts = remote_alerts;
+            unreadConversations = remote_convo;
         } else {
             failure("hypixel.net");
         }
