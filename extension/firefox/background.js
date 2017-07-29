@@ -1,7 +1,6 @@
 var delay = (60 * 1000); // How long between queries to the forums
 var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"; // Random string that must match on
                                                                                   // http://socket.bugg.co:8081/runkey
-
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
@@ -11,7 +10,7 @@ function RunKeyCheckException(error) {
 }
 
 function run() {
-    chrome.storage.sync.get("forum_alerts_toggle", function(items) {
+    browser.storage.sync.get("forum_alerts_toggle", function(items) {
         var runKeyValid = queryRunKey();
         if (runKeyValid) {
             if(items.forum_alerts_toggle === "true") {
@@ -99,7 +98,7 @@ function failure(point) {
     if(!failures[escapedPoint]) {
         failures[escapedPoint] = true;
 
-        return chrome.notifications.create(null, {
+        return browser.notifications.create(null, {
             type: "basic",
             iconUrl: "./pics/forum-alerts-64x.png",
             title: "Connection Failure",
@@ -112,7 +111,7 @@ function failure(point) {
 }
 
 function newAlert(alertCount, convoCount) {
-    chrome.notifications.create(null, {
+    browser.notifications.create(null, {
         type: "basic",
         iconUrl: "./pics/forum-alerts-64x.png",
         title: "New Hypixel Forum Notifications",
@@ -123,19 +122,19 @@ function newAlert(alertCount, convoCount) {
     });
 }
 
-chrome.notifications.onClicked.addListener(function(id) {
+browser.notifications.onClicked.addListener(function(id) {
     console.log("Clicked");
     if($.inArray(id, notifications.alert > -1)) {
-        chrome.tabs.create({url: "https://hypixel.net/"});
+        browser.tabs.create({url: "https://hypixel.net/"});
     } else {
-        chrome.tabs.create({url: "https://bugg.co/"});
+        browser.tabs.create({url: "https://bugg.co/"});
     }
 });
 
 // Check installed status
-chrome.runtime.onInstalled.addListener(function(details){
+browser.runtime.onInstalled.addListener(function(details){
     if(details.reason === "install"){
-        chrome.storage.sync.set({'forum_alerts_toggle': "true"}, function() {
+        browser.storage.sync.set({'forum_alerts_toggle': "true"}, function() {
             console.log("First install success, default settings applied.")
         });
     }

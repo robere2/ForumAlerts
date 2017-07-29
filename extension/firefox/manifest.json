@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+
+  "name": "Hypixel Alerts",
+  "description": "Extension for better notifications on the Hypixel Forums.",
+  "version": "0.2.3",
+  "author": "bugfroggy",
+  "homepage_url": "https://bugg.co/",
+  "offline_enabled": false,
+  "icons": {
+    "16": "pics/forum-alerts-16x.png",
+    "19": "pics/forum-alerts-icon.png",
+    "48": "pics/forum-alerts-48x.png",
+    "64": "pics/forum-alerts-64x.png",
+    "128": "pics/forum-alerts-128x.png"
+  },
+  "short_name": "HP Alerts",
+  "browser_action": {
+    "default_icon": "pics/forum-alerts-icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "background",
+    "storage",
+    "notifications",
+	"https://*.bugg.co/",
+	"https://hypixel.net/"
+  ],
+  "applications": {
+    "forumalerts": {
+      "id": "forumalerts@bugg.co"
+    }
+  },
+  "background": {
+    "scripts": ["vendor/jquery-3.2.1.min.js","background.js"]
+  }
+}

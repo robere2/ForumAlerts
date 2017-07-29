@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hypixel Alerts</title>
+    <style>
+        body {
+            font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+            font-size: 100%;
+            min-width: 300px;
+        }
+        #res {
+            color: #ff0000;
+        }
+        #legalese {
+            font-size: 10px;
+        }
+        #oauth_token {
+            width: 300px;
+        }
+    </style>
+    <script src="./vendor/jquery-3.2.1.min.js"></script>
+    <script src="popup.js"></script>
+</head>
+<body>
+    <!-- <label for="oauth_token">OAuth Token</label><input id="oauth_token"> -->
+    <label for="forum_alerts_toggle">Forum Notifications</label>
+    <select id="forum_alerts_toggle">
+        <option value="true">Enabled</option>
+        <option value="false">Disabled</option>
+    </select>
+
+    <button id="save">Save</button>
+    <p id="res"></p>
+    <div id="legalese">
+        <p>Not affiliated with the Hypixel Network. | <a href="https://bugg.co/forum-alerts/privacy.html" target="_blank">Privacy</a> | <span id="version"></span></p>
+    </div>
+</body>
+</html>
+
