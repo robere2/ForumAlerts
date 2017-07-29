@@ -1,6 +1,8 @@
 var delay = (60 * 1000); // How long between queries to the forums
 var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"; // Random string that must match on
                                                                                   // https://socket.bugg.co:8880/runkey
+
+var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var unreadAlerts = 0, unreadConversations = 0;
 function RunKeyCheckException(error) {
     this.error = error;
@@ -77,6 +79,9 @@ function ajaxFailure(point) {
         iconUrl: "./pics/forum-alerts-64x.png",
         title: "Connection Failure",
         message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself."
+    }, function(id) {
+        addNotification(id, "error");
+        console.log("Error Notification ID: " + id);
     });
 }
 
@@ -86,9 +91,21 @@ function newAlert(alertCount, convoCount) {
         iconUrl: "./pics/forum-alerts-64x.png",
         title: "New Hypixel Forum Notifications",
         message: "You have " + alertCount + " unread alert(s) and " + convoCount + " unread conversation(s)."
-    },function(notificationId) {
-        console.log("Notification ID: " + notificationId)
+    },function(id) {
+        addNotification(id, "alert");
+        console.log("Alert Notification ID: " + id);
     });
+    chrome.notifications.onClicked.addListener(function(id) {
+        if($.inArray(id, notifications.alert)) {
+            chrome.tabs.create({url: "https://hypixel.net/"});
+        } else {
+            chrome.tabs.create({url: "https://bugg.co/"});
+        }
+    });
+}
+
+function addNotification(id, type) {
+    notifications[type].push(id);
 }
 
 setInterval(run, delay);
