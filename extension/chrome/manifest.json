@@ -13,7 +13,8 @@
     "background",
     "storage",
     "notifications",
-	"https://*.bugg.co/"
+	"https://*.bugg.co/",
+	"https://hypixel.net/"
   ],
   "background": {
     "scripts": ["vendor/jquery-3.2.1.min.js","background.js"]
