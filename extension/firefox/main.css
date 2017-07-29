@@ -1,0 +1,16 @@
+body {
+    font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+    font-size: 100%;
+    min-width: 300px;
+}
+#res {
+    color: #ff0000;
+}
+#legalese {
+    font-size: 10px;
+}
+/*
+#oauth_token {
+    width: 300px;
+}
+*/
