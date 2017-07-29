@@ -27,7 +27,10 @@ function queryForum() {
         cache: false
     }).done(function(data) {
         if(data._visitor_alertsUnread > unreadAlerts || data._visitor_conversationsUnread > unreadConversations) {
+            console.log("New Notification created");
             newAlert(data._visitor_alertsUnread, data._visitor_conversationsUnread);
+        } else {
+            console.log("No new data.");
         }
     }).fail(function() {
         ajaxFailure("hypixel.net")
