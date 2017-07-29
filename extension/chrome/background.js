@@ -31,6 +31,9 @@ function queryForum() {
         console.log("Local: " + unreadAlerts + " : " + unreadConversations);
         if(data._visitor_alertsUnread > unreadAlerts || data._visitor_conversationsUnread > unreadConversations) {
             console.log("New Notification created");
+            unreadAlerts = data._visitor_alertsUnread;
+            unreadConversations = data._visitor_conversationsUnread;
+
             newAlert(data._visitor_alertsUnread, data._visitor_conversationsUnread);
         } else {
             console.log("No new data.");
