@@ -46,7 +46,7 @@ function queryForum() {
                 unreadAlerts = remote_alerts;
                 unreadConversations = remote_convo;
 
-                newAlert(remote_alerts, remove_convo);
+                newAlert(remote_alerts, remote_convo);
             } else {
                 console.log("No new data.");
             }
