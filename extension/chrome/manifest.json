@@ -12,7 +12,7 @@
     "16": "pics/forum-alerts-16x.png",
     "19": "pics/forum-alerts-icon.png",
     "48": "pics/forum-alerts-48x.png",
-    "64": "pics/forums-alerts-64x.png",
+    "64": "pics/forum-alerts-64x.png",
     "128": "pics/forum-alerts-128x.png"
   },
   "browser_action": {
