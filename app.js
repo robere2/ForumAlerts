@@ -1,5 +1,5 @@
 var express = require('express'),
-    https = require('https'),
+    http = require('http'),
     bodyParser = require('body-parser'),
     fs = require('fs');
 var app = express();
@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
     extended: true
 }));
 
-var server = https.createServer(credentials, app);
+var server = http.createServer(app);
 
 server.listen(8081, function () {
     console.log('Listening');
