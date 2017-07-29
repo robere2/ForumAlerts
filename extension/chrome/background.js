@@ -16,6 +16,7 @@ function run() {
 function runKeyCheck(data) {
     if(data.ok) {
         console.log("Successfully verified the run key.");
+        return true;
     } else {
         throw new RunKeyCheckException(data.error);
     }
@@ -56,6 +57,7 @@ function queryRunKey() {
 
 
 function ajaxFailure(point) {
+    console.error("Failed to connect to " + point);
     return chrome.notifications.create(null, {
         templateType: "basic",
         iconUrl: "./forums-alert-icon.png",
