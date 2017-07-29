@@ -74,7 +74,7 @@ function ajaxFailure(point) {
     console.error("Failed to connect to " + point);
     return chrome.notifications.create(null, {
         type: "basic",
-        iconUrl: "./forum-alerts-icon.png",
+        iconUrl: "./forum-alerts-64x.png",
         title: "Connection Failure",
         message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself."
     });
@@ -83,7 +83,7 @@ function ajaxFailure(point) {
 function newAlert(alertCount, convoCount) {
     chrome.notifications.create(null, {
         type: "basic",
-        iconUrl: "./forum-alerts-icon.png",
+        iconUrl: "./forum-alerts-64x.png",
         title: "New Hypixel Forum Notifications",
         message: "You have " + alertCount + " unread alert(s) and " + convoCount + " unread conversation(s)."
     },function(notificationId) {
