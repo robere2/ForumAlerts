@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-    $("#version").text("v" + browser.app.getDetails().version);
+    $("#version").text("v" + browser.runtime.getManifest().version);
 
     var forum_alerts_input = $("#forum_alerts_toggle");
     browser.storage.sync.get("forum_alerts_toggle", function(items) {
