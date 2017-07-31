@@ -56,10 +56,14 @@ function queryForum() {
             unreadAlerts = remote_alerts;
             unreadConversations = remote_convo;
         } else {
-            failure("hypixel.net");
+            if(!maintenance) {
+                failure("hypixel.net");
+            }
         }
     }).fail(function() {
-        failure("hypixel.net");
+        if(!maintenance) {
+            failure("hypixel.net");
+        }
     })
 }
 
@@ -84,7 +88,9 @@ function queryRunKey() {
             }
         }
     }).fail(function() {
-        failure("bugg.co");
+        if(!maintenance) {
+            failure("bugg.co");
+        }
         return_val = false;
     });
     return return_val;
