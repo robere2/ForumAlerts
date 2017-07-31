@@ -5,6 +5,9 @@ var express = require('express'),
 var app = express();
 var runkey = require("./hidden/runkey.js").runkey;
 
+var maintenance = false; // Bool for whether or not the service is under maintenance. Setting this to true
+                         // will send a notification letting people know and disable the application temporarily
+
 var credentials = { // SSL Credentials
     key: fs.readFileSync("../cert/privkey.pem"),
     cert: fs.readFileSync("../cert/cert.pem")
@@ -23,7 +26,17 @@ server.listen(8081, function () {
 
 
 app.get('/', function (req, res) {
+    res.header({"Access-Control-Allow-Origin": "*"});
     res.send("Home Page");
+});
+
+app.get('/maintenance', function( req, res) {
+    res.header({"Access-Control-Allow-Origin": "*"});
+    var json = {};
+    json.ok = true;
+    json.maintenance = maintenance;
+
+    res.json(json);
 });
 
 app.all('/runkey', function (req, res) {
