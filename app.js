@@ -32,7 +32,7 @@ app.get('/', function (req, res) {
 
 app.all('/runkey', function (req, res) {
     res.header({"Access-Control-Allow-Origin": "*"});
-    var json = {};
+    var json = {maintenance: false};
     if(maintenance) {
         json.ok = false;
         json.error = "System undergoing maintenance.";

@@ -4,6 +4,7 @@ var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
+var maintenance = false; // Variable storing whether or not the service is currently undergoing maintenance
 var unreadAlerts = 0, unreadConversations = 0;
 function RunKeyCheckException(error) {
     this.error = error;
@@ -23,7 +24,11 @@ function run() {
 function runKeyCheck(data) {
     if(data.ok) {
         console.log("Successfully verified the run key.");
+        maintenanceCheck(data.maintenance);
         return true;
+    } else if(data.maintenance) {
+        maintenanceCheck(data.maintenance);
+        return false;
     } else {
         throw new RunKeyCheckException(data.error);
     }
@@ -68,7 +73,7 @@ function queryRunKey() {
         reestablish("bugg.co");
 
         try{
-            runKeyCheck(data);
+            return_val = runKeyCheck(data);
         } catch(e) {
             if(e instanceof RunKeyCheckException) {
                 console.error("RunKeyCheckException: " + e.error);
@@ -78,7 +83,6 @@ function queryRunKey() {
                 return_val = false;
             }
         }
-        return_val = true;
     }).fail(function() {
         failure("bugg.co");
         return_val = false;
@@ -99,6 +103,31 @@ function failure(point) {
             iconUrl: "./pics/forum-alerts-64x.png",
             title: "Connection Failure",
             message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself. (Are you logged in?)"
+        }, function(id) {
+            addNotification(id, "error");
+            console.log("Error Notification ID: " + id);
+        });
+    }
+}
+
+function maintenanceCheck(status) {
+
+    if(status !== maintenance) {
+        maintenance = status;
+        var title, message;
+        if(maintenance) {
+            title = "Undergoing Maintenance";
+            message = "This service is currently unavailable due to maintenance. You will be notified when it is back online.";
+        } else {
+            title = "Maintenance Clear";
+            message = "This service is no longer under maintenance. If you notice it is not working properly still, try updating the extension.";
+        }
+
+        return browser.notifications.create(null, {
+            type: "basic",
+            iconUrl: "./pics/forum-alerts-64x.png",
+            title: title,
+            message: message
         }, function(id) {
             addNotification(id, "error");
             console.log("Error Notification ID: " + id);
