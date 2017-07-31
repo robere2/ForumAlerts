@@ -129,6 +129,7 @@ browser.notifications.onClicked.addListener(function(id) {
     } else {
         browser.tabs.create({url: "https://bugg.co/"});
     }
+    browser.notifications.clear(id);
 });
 
 // Check installed status

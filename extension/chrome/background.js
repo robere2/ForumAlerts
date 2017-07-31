@@ -130,6 +130,7 @@ chrome.notifications.onClicked.addListener(function(id) {
     } else {
         chrome.tabs.create({url: "https://bugg.co/"});
     }
+    chrome.notifications.clear(id);
 });
 
 // Check installed status
