@@ -30,28 +30,25 @@ app.get('/', function (req, res) {
     res.send("Home Page");
 });
 
-app.get('/maintenance', function( req, res) {
-    res.header({"Access-Control-Allow-Origin": "*"});
-    var json = {};
-    json.ok = true;
-    json.maintenance = maintenance;
-
-    res.json(json);
-});
-
 app.all('/runkey', function (req, res) {
     res.header({"Access-Control-Allow-Origin": "*"});
     var json = {};
-    // If key is valid
-    if (typeof req.body.key === "undefined") {
+    if(maintenance) {
         json.ok = false;
-        json.error = "No key";
+        json.error = "System undergoing maintenance.";
+        json.maintenance = true;
     } else {
-        if (req.body.key === runkey) {
-            json.ok = true;
-        } else {
+        // If key is valid
+        if (typeof req.body.key === "undefined") {
             json.ok = false;
-            json.error = "Invalid key";
+            json.error = "No key";
+        } else {
+            if (req.body.key === runkey) {
+                json.ok = true;
+            } else {
+                json.ok = false;
+                json.error = "Invalid key";
+            }
         }
     }
     res.json(json);

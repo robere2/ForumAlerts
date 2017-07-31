@@ -34,9 +34,7 @@ function queryForum() {
     $.ajax("https://hypixel.net/?_xfResponseType=json", {
         cache: false
     }).done(function(data) {
-        if(failures.hypixelnet) {
-            failures.hypixelnet = false;
-        }
+        reestablish("hypixel.net");
 
         if("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
             var remote_alerts = data._visitor_alertsUnread;
@@ -68,9 +66,7 @@ function queryRunKey() {
         method: "POST",
         data: {key: run_key}
     }).done(function(data) {
-        if(failures.buggco) {
-           failures.buggco = false;
-        }
+        reestablish("bugg.co");
 
         try{
             runKeyCheck(data);
@@ -104,6 +100,24 @@ function failure(point) {
             iconUrl: "./pics/forum-alerts-64x.png",
             title: "Connection Failure",
             message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself. (Are you logged in?)"
+        }, function(id) {
+            addNotification(id, "error");
+            console.log("Error Notification ID: " + id);
+        });
+    }
+}
+function reestablish(point) {
+    var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
+
+    if(failures[escapedPoint]) {
+        console.error("Reconnected to " + point);
+        failures[escapedPoint] = false;
+
+        return chrome.notifications.create(null, {
+            type: "basic",
+            iconUrl: "./pics/forum-alerts-64x.png",
+            title: "Connection Reestablished",
+            message: "Connection to " + point + " reestablished."
         }, function(id) {
             addNotification(id, "error");
             console.log("Error Notification ID: " + id);
