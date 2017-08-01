@@ -3,7 +3,7 @@ $(document).ready(function() {
     $("#version").text("v" + chrome.app.getDetails().version);
 
     var forum_alerts_input = $("#forum_alerts_toggle");
-    chrome.storage.sync.get("forum_alerts_toggle", function(items) {
+    chrome.storage.sync.get(["maintenance", "forum_alerts_toggle"], function(items) {
 
         var val = items.forum_alerts_toggle;
         if(items.forum_alerts_toggle !== "true" && items.forum_alerts_toggle !== "false") {
@@ -11,6 +11,11 @@ $(document).ready(function() {
                 console.log("Invalid value for forum_alerts_toggle, fallback")
             });
             val = "true";
+        }
+        if(items.maintenance) {
+            $("#maintenance").text("This service is under maintenance. It will be back online shortly.");
+        } else {
+            $("#maintenance").text("");
         }
         forum_alerts_input.val(val);
     });
