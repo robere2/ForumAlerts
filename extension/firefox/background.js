@@ -1,6 +1,6 @@
 var delay = (60 * 1000); // How long between queries to the forums
 var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"; // Random string that must match on
-                                                                                  // http://socket.bugg.co:2083/runkey
+                                                                                  // http://aws.bugg.co:2083/runkey
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
@@ -87,14 +87,19 @@ function queryForum() {
         } else { // Presumably not logged in as no alert or convo data was returned.
             failure("hypixel.net");
         }
-    }).fail(function() {
+    }).fail(function() { // Connection failed
         failure("hypixel.net");
     })
 }
 
+/**
+ * Send an AJAX request to /runkey to determine if the program is authorized to run (implemented in case I ever need to
+ * shut down the program permanently in the future, or support only specific versions)
+ * @returns {boolean} Whether the script is authorized to continue running
+ */
 function queryRunKey() {
     var return_val = true;
-    $.ajax("http://socket.bugg.co:2083/runkey", {
+    $.ajax("http://aws.bugg.co:2083/runkey", {
         cache: false,
         method: "POST",
         data: {key: run_key}
