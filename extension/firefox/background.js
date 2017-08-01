@@ -18,6 +18,11 @@ function init() {
     setInterval(run, delay);
 }
 
+/**
+ * Exception Constructor
+ * @param error Error that occurred.
+ * @constructor
+ */
 function RunKeyCheckException(error) {
     this.error = error;
 }
@@ -26,8 +31,8 @@ function RunKeyCheckException(error) {
  * Runs on an interval determined by delay variable, essentially is the scripts core.
  */
 function run() {
-    browser.storage.sync.get("forum_alerts_toggle", function(items) {
-        var runKeyValid = queryRunKey();
+    browser.storage.sync.get("forum_alerts_toggle", function(items) { // Grabs the settings set by the popup
+        var runKeyValid = queryRunKey(); // Checks whether the local runkey is valid with /runkey.
         if (runKeyValid) {
             if(items.forum_alerts_toggle === "true") {
                 queryForum();
@@ -43,9 +48,9 @@ function run() {
  * @throws RunKeyCheckException when data.ok is false for some reason (but not in maintenance).
  */
 function runKeyCheck(data) {
-    if(data.ok) {
+    if(data.ok) { // If runkey is valid
         console.log("Successfully verified the run key.");
-        maintenanceCheck(data.maintenance);
+        maintenanceCheck(data.maintenance); // Check for changes in maintenance mode
         return true;
     } else if(data.maintenance) {
         maintenanceCheck(data.maintenance);
@@ -55,13 +60,16 @@ function runKeyCheck(data) {
     }
 }
 
+/**
+ * Makes an AJAX call to the forums and then sends a desktop notification if any new alerts/convos have come in.
+ */
 function queryForum() {
     $.ajax("https://hypixel.net/?_xfResponseType=json", {
         cache: false
     }).done(function(data) {
-        reestablish("hypixel.net");
-
         if("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
+            reestablish("hypixel.net"); // Connection didn't fail so send re-established notification
+
             var remote_alerts = data._visitor_alertsUnread;
             var remote_convo = data._visitor_conversationsUnread;
             console.log("Unread alerts: " + remote_alerts);
@@ -76,15 +84,11 @@ function queryForum() {
             }
             unreadAlerts = remote_alerts;
             unreadConversations = remote_convo;
-        } else {
-            if(!maintenance) {
-                failure("hypixel.net");
-            }
-        }
-    }).fail(function() {
-        if(!maintenance) {
+        } else { // Presumably not logged in as no alert or convo data was returned.
             failure("hypixel.net");
         }
+    }).fail(function() {
+        failure("hypixel.net");
     })
 }
 
@@ -121,19 +125,21 @@ function queryRunKey() {
 function failure(point) {
     console.error("Failed to connect to " + point);
 
-    var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
-    if(!failures[escapedPoint]) {
-        failures[escapedPoint] = true;
+    if(!maintenance) {
+        var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
+        if (!failures[escapedPoint]) {
+            failures[escapedPoint] = true;
 
-        return browser.notifications.create(null, {
-            type: "basic",
-            iconUrl: "./pics/forum-alerts-64x.png",
-            title: "Connection Failure",
-            message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself. (Are you logged in?)"
-        }, function(id) {
-            addNotification(id, "error");
-            console.log("Error Notification ID: " + id);
-        });
+            return browser.notifications.create(null, {
+                type: "basic",
+                iconUrl: "./pics/forum-alerts-64x.png",
+                title: "Connection Failure",
+                message: "Failed connecting to " + point + "! Contact bugfroggy if this does not resolve itself. (Are you logged in?)"
+            }, function (id) {
+                addNotification(id, "error");
+                console.log("Error Notification ID: " + id);
+            });
+        }
     }
 }
 
