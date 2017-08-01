@@ -5,7 +5,7 @@ var express = require('express'),
 var app = express();
 var runkey = require("./hidden/runkey.js").runkey;
 
-var maintenance = false; // Bool for whether or not the service is under maintenance. Setting this to true
+var maintenance = true; // Bool for whether or not the service is under maintenance. Setting this to true
                          // will send a notification letting people know and disable the application temporarily
 
 var credentials = { // SSL Credentials
@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
 
 var server = http.createServer(app);
 
-server.listen(8081, function () {
+server.listen(8880, function () {
     console.log('Listening');
 });
 

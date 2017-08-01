@@ -1,6 +1,6 @@
 var delay = (60 * 1000); // How long between queries to the forums
 var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"; // Random string that must match on
-                                                                                  // http://socket.bugg.co:8081/runkey
+                                                                                  // http://socket.bugg.co:8880/runkey
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
@@ -69,7 +69,7 @@ function queryForum() {
 
 function queryRunKey() {
     var return_val = true;
-    $.ajax("http://socket.bugg.co:8081/runkey", {
+    $.ajax("http://socket.bugg.co:8880/runkey", {
         cache: false,
         method: "POST",
         data: {key: run_key}
