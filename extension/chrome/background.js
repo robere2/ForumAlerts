@@ -4,8 +4,17 @@ var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
-var maintenance = false; // Variable storing whether or not the service is currently undergoing maintenance
 var unreadAlerts = 0, unreadConversations = 0;
+var maintenance; // Variable storing whether or not the service is currently undergoing maintenance
+
+function init() {
+    chrome.storage.sync.get("maintenance", function(items) {
+        maintenance = items.maintenance || false; // Set to default (false) if items.maintenance is falsy (i.e. undefined).
+    });
+
+    setInterval(run, delay);
+}
+
 function RunKeyCheckException(error) {
     this.error = error;
 }
@@ -115,6 +124,9 @@ function failure(point) {
 function maintenanceCheck(status) {
 
     if(status !== maintenance) {
+        chrome.storage.sync.set({maintenance: status}, function() {
+            console.log("Updated maintenance status");
+        });
         maintenance = status;
         var title, message;
         if(maintenance) {
@@ -191,4 +203,4 @@ function addNotification(id, type) {
     notifications[type].push(id);
 }
 
-setInterval(run, delay);
+init();

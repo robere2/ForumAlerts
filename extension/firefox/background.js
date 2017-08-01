@@ -4,12 +4,27 @@ var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
 var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
                                                    // prevent notification spam.
-var maintenance = false; // Variable storing whether or not the service is currently undergoing maintenance
 var unreadAlerts = 0, unreadConversations = 0;
+var maintenance; // Variable storing whether or not the service is currently undergoing maintenance
+
+/**
+ * Initializer; called to start the script
+ */
+function init() {
+    browser.storage.sync.get("maintenance", function(items) {
+        maintenance = items.maintenance || false; // Set to default (false) if items.maintenance is falsy (i.e. undefined).
+    });
+
+    setInterval(run, delay);
+}
+
 function RunKeyCheckException(error) {
     this.error = error;
 }
 
+/**
+ * Runs on an interval determined by delay variable, essentially is the scripts core.
+ */
 function run() {
     browser.storage.sync.get("forum_alerts_toggle", function(items) {
         var runKeyValid = queryRunKey();
@@ -21,6 +36,12 @@ function run() {
     });
 }
 
+/**
+ * Parses the data returned by /runkey and determines whether the script should continue running.
+ * @param data Data provided by the AJAX call to /runkey.
+ * @returns {boolean} Whether or not the script should continue running.
+ * @throws RunKeyCheckException when data.ok is false for some reason (but not in maintenance).
+ */
 function runKeyCheck(data) {
     if(data.ok) {
         console.log("Successfully verified the run key.");
@@ -119,6 +140,9 @@ function failure(point) {
 function maintenanceCheck(status) {
 
     if(status !== maintenance) {
+        browser.storage.sync.set({maintenance: status}, function() {
+            console.log("Updated maintenance status");
+        });
         maintenance = status;
         var title, message;
         if(maintenance) {
@@ -195,4 +219,4 @@ function addNotification(id, type) {
     notifications[type].push(id);
 }
 
-setInterval(run, delay);
+init();
