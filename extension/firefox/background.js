@@ -98,39 +98,42 @@ function queryForum() {
  * @returns {boolean} Whether the script is authorized to continue running
  */
 function queryRunKey() {
-    var return_val = true;
+    var return_val = true; // Value to be returned at the end. Can change throughout the function a bunch so variables.
     $.ajax("https://aws.bugg.co:2083/runkey", {
         cache: false,
         method: "POST",
         data: {key: run_key}
     }).done(function(data) {
-        reestablish("bugg.co");
+        reestablish("bugg.co"); // Connection didn't fail so send re-established notification
 
         try{
-            return_val = runKeyCheck(data);
+            return_val = runKeyCheck(data); // Determine whether /runkey is authorizing the script to proceed
         } catch(e) {
             if(e instanceof RunKeyCheckException) {
                 console.error("RunKeyCheckException: " + e.error);
                 return_val = false;
-            } else {
+            } else { // Technically not uncaught but whatever
                 console.error("Uncaught Exception: " + e.toString());
                 return_val = false;
             }
         }
-    }).fail(function() {
+    }).fail(function() { // Connection failed
         failure("bugg.co");
         return_val = false;
     });
     return return_val;
 }
 
-
+/**
+ * Called whenever there is some sort of connection error or failure to gather data
+ * @param point The host that the failure is occurring on.
+ */
 function failure(point) {
     console.error("Failed to connect to " + point);
 
-    if(!maintenance) {
+    if(!maintenance) { // If maintenance mode is enabled, then it is assumed that this is known and isn't a need to panic.
         var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
-        if (!failures[escapedPoint]) {
+        if (!failures[escapedPoint]) { // If a notification for this request hasn't already been sent out
             failures[escapedPoint] = true;
 
             return browser.notifications.create(null, {
@@ -146,14 +149,20 @@ function failure(point) {
     }
 }
 
+/**
+ * Checks whether or not a maintenance notification needs to be sent out/updated.
+ * @param status Maintenance status returned from /runkey.
+ */
 function maintenanceCheck(status) {
 
-    if(status !== maintenance) {
+    if(status !== maintenance) { // If the status of maintenance mode has changed
         browser.storage.sync.set({maintenance: status}, function() {
             console.log("Updated maintenance status");
         });
         maintenance = status;
+
         var title, message;
+        // Determine the message to send out with the notification
         if(maintenance) {
             title = "Undergoing Maintenance";
             message = "This service is currently unavailable due to maintenance. You will be notified when it is back online.";
@@ -169,11 +178,15 @@ function maintenanceCheck(status) {
             message: message
         }, function(id) {
             addNotification(id, "error");
-            console.log("Error Notification ID: " + id);
+            console.log("Maintenance Notification ID: " + id);
         });
     }
 }
 
+/**
+ * Called whenever a connection issue that resulted in the call of failure() is fixed.
+ * @param point The host that the failure was occurring on.
+ */
 function reestablish(point) {
     var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
 
@@ -185,7 +198,7 @@ function reestablish(point) {
             type: "basic",
             iconUrl: "./pics/forum-alerts-64x.png",
             title: "Connection Reestablished",
-            message: "Connection to " + point + " reestablished."
+            message: "Connection to " + point + " reestablished. Sorry about the inconvenience."
         }, function(id) {
             addNotification(id, "error");
             console.log("Error Notification ID: " + id);
