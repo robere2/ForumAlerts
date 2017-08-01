@@ -34,7 +34,9 @@ function RunKeyCheckException(error) {
 function run() {
     browser.storage.sync.get("forum_alerts_toggle", function(items) { // Grabs the settings set by the popup
         queryRunKey(function() { // Checks whether the local runkey is valid with /runkey.
-            queryForum();
+            if(items.forum_alerts_toggle === "true") {
+                queryForum();
+            }
         });
     });
 }
@@ -62,34 +64,32 @@ function runKeyCheck(data) {
  * Makes an AJAX call to the forums and then sends a desktop notification if any new alerts/convos have come in.
  */
 function queryForum() {
-    if(items.forum_alerts_toggle === "true") {
-        $.ajax("https://hypixel.net/?_xfResponseType=json", {
-            cache: false
-        }).done(function (data) {
-            if ("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
-                reestablish("hypixel.net"); // Connection didn't fail so send re-established notification
+    $.ajax("https://hypixel.net/?_xfResponseType=json", {
+        cache: false
+    }).done(function (data) {
+        if ("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
+            reestablish("hypixel.net"); // Connection didn't fail so send re-established notification
 
-                var remote_alerts = data._visitor_alertsUnread;
-                var remote_convo = data._visitor_conversationsUnread;
-                console.log("Unread alerts: " + remote_alerts);
-                console.log("Unread convos: " + remote_convo);
-                console.log("Local: " + unreadAlerts + " : " + unreadConversations);
+            var remote_alerts = data._visitor_alertsUnread;
+            var remote_convo = data._visitor_conversationsUnread;
+            console.log("Unread alerts: " + remote_alerts);
+            console.log("Unread convos: " + remote_convo);
+            console.log("Local: " + unreadAlerts + " : " + unreadConversations);
 
-                if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
-                    console.log("New Notification created");
-                    newAlert(remote_alerts, remote_convo);
-                } else {
-                    console.log("No new data.");
-                }
-                unreadAlerts = remote_alerts;
-                unreadConversations = remote_convo;
-            } else { // Presumably not logged in as no alert or convo data was returned.
-                failure("hypixel.net");
+            if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
+                console.log("New Notification created");
+                newAlert(remote_alerts, remote_convo);
+            } else {
+                console.log("No new data.");
             }
-        }).fail(function () { // Connection failed
+            unreadAlerts = remote_alerts;
+            unreadConversations = remote_convo;
+        } else { // Presumably not logged in as no alert or convo data was returned.
             failure("hypixel.net");
-        })
-    }
+        }
+    }).fail(function () { // Connection failed
+        failure("hypixel.net");
+    })
 }
 
 /**
