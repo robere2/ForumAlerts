@@ -189,7 +189,7 @@ function maintenanceCheck(status) {
  */
 function reestablish(point) {
 
-    if(failures[point]) {
+    if(failures[point]) { // If a request to this host has failed before now
         console.error("Reconnected to " + point);
         failures[point] = false;
 
@@ -205,6 +205,11 @@ function reestablish(point) {
     }
 }
 
+/**
+ * Creates a new desktop notification for a new forum alert or convo
+ * @param alertCount Number of alerts on the forum
+ * @param convoCount Number of unread convos on the forum
+ */
 function newAlert(alertCount, convoCount) {
     browser.notifications.create(null, {
         type: "basic",
@@ -217,6 +222,9 @@ function newAlert(alertCount, convoCount) {
     });
 }
 
+/**
+ * Opens the appropriate tab upon notifications being clicked and then closes the notification
+ */
 browser.notifications.onClicked.addListener(function(id) {
     console.log("Clicked");
     if($.inArray(id, notifications.alert > -1)) {
@@ -227,7 +235,9 @@ browser.notifications.onClicked.addListener(function(id) {
     browser.notifications.clear(id);
 });
 
-// Check installed status
+/**
+ * Checks for the extension's install status, and if first install, sets the default settings.
+ */
 browser.runtime.onInstalled.addListener(function(details){
     if(details.reason === "install"){
         browser.storage.sync.set({'forum_alerts_toggle': "true"}, function() {
@@ -236,6 +246,11 @@ browser.runtime.onInstalled.addListener(function(details){
     }
 });
 
+/**
+ * Stores the notification ID in an array and associates it with what type of notification it is.
+ * @param id The notification ID
+ * @param type The type this notification is
+ */
 function addNotification(id, type) {
     notifications[type].push(id);
 }
