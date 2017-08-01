@@ -6,6 +6,7 @@ var failures = {"hypixel.net": false, "bugg.co": false}; // Documents whether or
                                                          // prevent notification spam.
 var unreadAlerts = 0, unreadConversations = 0;
 var maintenance; // Variable storing whether or not the service is currently undergoing maintenance
+var maintenance_bypass = false; // Whether or not maintenance mode should be ignored.
 
 /**
  * Initializer; called to start the script
@@ -32,12 +33,9 @@ function RunKeyCheckException(error) {
  */
 function run() {
     browser.storage.sync.get("forum_alerts_toggle", function(items) { // Grabs the settings set by the popup
-        var runKeyValid = queryRunKey(); // Checks whether the local runkey is valid with /runkey.
-        if (runKeyValid) {
-            if(items.forum_alerts_toggle === "true") {
-                queryForum();
-            }
-        }
+        queryRunKey(function() { // Checks whether the local runkey is valid with /runkey.
+            queryForum();
+        });
     });
 }
 
@@ -64,41 +62,43 @@ function runKeyCheck(data) {
  * Makes an AJAX call to the forums and then sends a desktop notification if any new alerts/convos have come in.
  */
 function queryForum() {
-    $.ajax("https://hypixel.net/?_xfResponseType=json", {
-        cache: false
-    }).done(function(data) {
-        if("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
-            reestablish("hypixel.net"); // Connection didn't fail so send re-established notification
+    if(items.forum_alerts_toggle === "true") {
+        $.ajax("https://hypixel.net/?_xfResponseType=json", {
+            cache: false
+        }).done(function (data) {
+            if ("_visitor_alertsUnread" in data && "_visitor_conversationsUnread" in data) {
+                reestablish("hypixel.net"); // Connection didn't fail so send re-established notification
 
-            var remote_alerts = data._visitor_alertsUnread;
-            var remote_convo = data._visitor_conversationsUnread;
-            console.log("Unread alerts: " + remote_alerts);
-            console.log("Unread convos: " + remote_convo);
-            console.log("Local: " + unreadAlerts + " : " + unreadConversations);
+                var remote_alerts = data._visitor_alertsUnread;
+                var remote_convo = data._visitor_conversationsUnread;
+                console.log("Unread alerts: " + remote_alerts);
+                console.log("Unread convos: " + remote_convo);
+                console.log("Local: " + unreadAlerts + " : " + unreadConversations);
 
-            if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
-                console.log("New Notification created");
-                newAlert(remote_alerts, remote_convo);
-            } else {
-                console.log("No new data.");
+                if (remote_alerts > unreadAlerts || remote_convo > unreadConversations) {
+                    console.log("New Notification created");
+                    newAlert(remote_alerts, remote_convo);
+                } else {
+                    console.log("No new data.");
+                }
+                unreadAlerts = remote_alerts;
+                unreadConversations = remote_convo;
+            } else { // Presumably not logged in as no alert or convo data was returned.
+                failure("hypixel.net");
             }
-            unreadAlerts = remote_alerts;
-            unreadConversations = remote_convo;
-        } else { // Presumably not logged in as no alert or convo data was returned.
+        }).fail(function () { // Connection failed
             failure("hypixel.net");
-        }
-    }).fail(function() { // Connection failed
-        failure("hypixel.net");
-    })
+        })
+    }
 }
 
 /**
  * Send an AJAX request to /runkey to determine if the program is authorized to run (implemented in case I ever need to
  * shut down the program permanently in the future, or support only specific versions)
- * @returns {boolean} Whether the script is authorized to continue running
+ * @param callback Callback function. Runs only if the script may continue (i.e. valid runkey)
  */
-function queryRunKey() {
-    var return_val = true; // Value to be returned at the end. Can change throughout the function a bunch so variables.
+function queryRunKey(callback) {
+    var run_valid = true; // Whether or not the run key/the script may continue running. Defaults true.
     $.ajax("https://aws.bugg.co:2083/runkey", {
         cache: false,
         method: "POST",
@@ -107,21 +107,24 @@ function queryRunKey() {
         reestablish("bugg.co"); // Connection didn't fail so send re-established notification
 
         try{
-            return_val = runKeyCheck(data); // Determine whether /runkey is authorizing the script to proceed
+            run_valid = runKeyCheck(data); // Determine whether /runkey is authorizing the script to proceed
         } catch(e) {
             if(e instanceof RunKeyCheckException) {
                 console.error("RunKeyCheckException: " + e.error);
-                return_val = false;
+                run_valid = false;
             } else { // Technically not uncaught but whatever
                 console.error("Uncaught Exception: " + e.toString());
-                return_val = false;
+                run_valid = false;
             }
         }
     }).fail(function() { // Connection failed
         failure("bugg.co");
-        return_val = false;
+        run_valid = false;
+    }).always(function() {
+        if(run_valid) { // If the script may continue then call the callback
+            callback();
+        }
     });
-    return return_val;
 }
 
 /**
@@ -131,7 +134,7 @@ function queryRunKey() {
 function failure(point) {
     console.error("Failed to connect to " + point);
 
-    if(!maintenance) { // If maintenance mode is enabled, then it is assumed that this is known and isn't a need to panic.
+    if(!maintenance || maintenance_bypass) { // If maintenance mode is enabled, then it is assumed that this is known and isn't a need to panic.
 
         if (!failures[point]) { // If a notification for this request hasn't already been sent out
             failures[point] = true;
