@@ -2,8 +2,8 @@ var delay = (60 * 1000); // How long between queries to the forums
 var run_key = "wr8yoisfPG0ggb6MSsHYJH3hkMmInkxRTsHjmnNIuv0QjNmGBnnW9igZWuoeYet6"; // Random string that must match on
                                                                                   // https://aws.bugg.co:2083/runkey
 var notifications = {error: [], alert: []}; // Object for different notification IDs.
-var failures = {hypixelnet: false, buggco: false}; // Documents whether or not requests to websites have failed. Helps
-                                                   // prevent notification spam.
+var failures = {"hypixel.net": false, "bugg.co": false}; // Documents whether or not requests to websites have failed. Helps
+                                                         // prevent notification spam.
 var unreadAlerts = 0, unreadConversations = 0;
 var maintenance; // Variable storing whether or not the service is currently undergoing maintenance
 
@@ -132,9 +132,9 @@ function failure(point) {
     console.error("Failed to connect to " + point);
 
     if(!maintenance) { // If maintenance mode is enabled, then it is assumed that this is known and isn't a need to panic.
-        var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
-        if (!failures[escapedPoint]) { // If a notification for this request hasn't already been sent out
-            failures[escapedPoint] = true;
+
+        if (!failures[point]) { // If a notification for this request hasn't already been sent out
+            failures[point] = true;
 
             return browser.notifications.create(null, {
                 type: "basic",
@@ -188,11 +188,10 @@ function maintenanceCheck(status) {
  * @param point The host that the failure was occurring on.
  */
 function reestablish(point) {
-    var escapedPoint = point.replace(/\./g, ''); // Replaces the period in the URL to make it safe for object names
 
-    if(failures[escapedPoint]) {
+    if(failures[point]) {
         console.error("Reconnected to " + point);
-        failures[escapedPoint] = false;
+        failures[point] = false;
 
         return browser.notifications.create(null, {
             type: "basic",
