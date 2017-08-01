@@ -113,9 +113,7 @@ function queryRunKey() {
             }
         }
     }).fail(function() {
-        if(!maintenance) {
-            failure("bugg.co");
-        }
+        failure("bugg.co");
         return_val = false;
     });
     return return_val;
