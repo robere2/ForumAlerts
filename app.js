@@ -4,6 +4,7 @@ var express = require('express'),
     fs = require('fs');
 var app = express();
 var runkey = require("./hidden/runkey.js").runkey;
+process.title = "forumalerts"; // Change the Linux process name
 
 var maintenance = false; // Bool for whether or not the service is under maintenance. Setting this to true
                          // will send a notification letting people know and disable the application temporarily
