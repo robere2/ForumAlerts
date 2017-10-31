@@ -10,8 +10,8 @@ var maintenance = false; // Bool for whether or not the service is under mainten
                          // will send a notification letting people know and disable the application temporarily
 
 var credentials = { // SSL Credentials
-    key: fs.readFileSync("../cert/privkey.pem"),
-    cert: fs.readFileSync("../cert/cert.pem")
+    key: fs.readFileSync("/etc/certificates/bugg.co/private-key.pem"),
+    cert: fs.readFileSync("/etc/certificates/bugg.co/cert.pem")
 };
 
 app.use(bodyParser.json());       // to support JSON-encoded POST bodies
