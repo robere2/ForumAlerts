@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="AWS Node Server" uploadOnCheckin="756a7946-2fa0-4227-abb0-d89fb6da9516">
+  <component name="PublishConfigData" serverName="AWS - ec2-user" uploadOnCheckin="756a7946-2fa0-4227-abb0-d89fb6da9516">
     <serverData>
-      <paths name="AWS Node Server">
+      <paths name="AWS - ec2-user">
         <serverdata>
           <mappings>
             <mapping deploy="/var/forum-alerts" local="$PROJECT_DIR$" web="/" />

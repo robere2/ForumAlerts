@@ -1,9 +1,11 @@
 var express = require('express'),
     https = require('https'),
     bodyParser = require('body-parser'),
-    fs = require('fs');
+    fs = require('fs'),
+    path = require('path');
 var app = express();
 var runkey = require("./hidden/runkey.js").runkey;
+
 process.title = "forumalerts"; // Change the Linux process name
 
 var maintenance = false; // Bool for whether or not the service is under maintenance. Setting this to true
@@ -13,6 +15,9 @@ var credentials = { // SSL Credentials
     key: fs.readFileSync("/etc/certificates/bugg.co/private-key.pem"),
     cert: fs.readFileSync("/etc/certificates/bugg.co/cert.pem")
 };
+
+// Set static content
+app.use(express.static(path.join(__dirname, 'static'), {maxAge: 7 * 24 * 60 * 60 * 1000}));
 
 app.use(bodyParser.json());       // to support JSON-encoded POST bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded POST bodies
@@ -25,10 +30,9 @@ server.listen(2083, function () {
     console.log('Listening');
 });
 
-
 app.get('/', function (req, res) {
     res.header({"Access-Control-Allow-Origin": "*"});
-    res.send("Home Page");
+    res.render()
 });
 
 app.all('/runkey', function (req, res) {
